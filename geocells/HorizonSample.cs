@@ -13,5 +13,13 @@ namespace geocells
 
         // Output
         public double DistanceToNearestWell { get; set; }
+
+        public bool Good =>
+            //Z > 2650 && 
+            Porosity > 0.01 &&
+            //Amplitude > 0 &&
+            DistanceToNearestWell > 100;
+
+        public int GoodBit => Good ? 1 : 0;
     }
 }
