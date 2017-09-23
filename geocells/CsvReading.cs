@@ -27,5 +27,11 @@ namespace geocells
             ServiceStack.Text.CsvConfig.ItemSeperatorString = ","; // Reset the global separator to the default comma
             return listings;
         }
+
+        internal static void WriteCsvToFile<T>(string path, IEnumerable<T> data)
+        {
+            var text = data.ToCsv();
+            File.WriteAllText(path, text);
+        }
     }
 }

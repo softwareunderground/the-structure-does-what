@@ -7,18 +7,21 @@ namespace geocells
     [Verb("crunch", HelpText = "Takes tab-delimited horizon data and creates spreadsheet of 'cells'")]
     class CrunchOptions
     {
-        [Value(1, Required = true, HelpText = "A file name is required for a tab-delimited horizon file")]
+        [Value(1, Required = true, HelpText = "A file path for a tab-delimited horizon file")]
+        public string HorizonPath { get; set; }
 
-        public string FilePath { get; set; }
+        [Value(2, Required = true, HelpText = "A file path for a comma-delimited well location file (X, Y)")]
+        public string WellPath { get; set; }
     }
 
-    public class HorizonSample
+    [Verb("gen", HelpText = "Generates random well locations")]
+    class GenOptions
     {
-        public long Inline { get; set; }
-        public long Crossline { get; set; }
-        public double Z { get; set; }
-        public double Porosity { get; set; }
-        public double Amplitude { get; set; }
+        [Value(1, Required = true, HelpText = "A destination file path for a comma-delimited well location file (X, Y)")]
+        public string WellPath { get; set; }
+
+        [Option('n', "count", HelpText = "Number of wells to generate. Default is 5.")]
+        public int Count { get; set; } = 5;
     }
 
     class Program
@@ -27,12 +30,14 @@ namespace geocells
         {
             var parser = new Parser(with => with.HelpWriter = Console.Out);
             var result = parser.ParseArguments<
-                CrunchOptions>
+                CrunchOptions,
+                GenOptions>
                 (args);
             try
             {
                 result
-                    .WithParsed<CrunchOptions>(opts => Crunch(opts));
+                    .WithParsed<CrunchOptions>(opts => Crunch(opts))
+                    .WithParsed<GenOptions>(opts => Gen(opts));
                 return 0;
             }
             catch (Exception exception)
@@ -47,9 +52,33 @@ namespace geocells
 
         private static void Crunch(CrunchOptions opts)
         {
-            var horizonSamples = CsvReading.ReadCsvFromFile<HorizonSample>(opts.FilePath, "\t")
+            var horizonSamples = CsvReading.ReadCsvFromFile<HorizonSample>(opts.HorizonPath, "\t")
                 .ToArray();
-            Console.WriteLine($"I was able to read {horizonSamples.Length} samples.");
+            Console.WriteLine($"Read {horizonSamples.Length} horizon samples.");
+            var wells = CsvReading.ReadCsvFromFile<Location>(opts.WellPath)
+                .ToArray();
+            Console.WriteLine($"Read {wells.Length} well locations.");
+        }
+
+        private static Random _rnd = new Random();
+
+        private static void Gen(GenOptions opts)
+        {
+            // Hard-coded values based on sample data...
+            var xMin = 1000.0;
+            var xMax = 1300.0;
+            var dx = xMax - xMin;
+            var yMin = 2000.0;
+            var yMax = 2245.0;
+            var dy = yMax - yMin;
+            var locations = new Location[opts.Count];
+            for (int i = 0; i < opts.Count; i++)
+            {
+                var x = _rnd.NextDouble() * dx + xMin;
+                var y = _rnd.NextDouble() * dy + xMin;
+                locations[i] = new Location { X = x, Y = y };
+            }
+            CsvReading.WriteCsvToFile(opts.WellPath, locations);
         }
     }
 }
