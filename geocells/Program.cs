@@ -4,26 +4,6 @@ using CommandLine;
 
 namespace geocells
 {
-    [Verb("crunch", HelpText = "Takes tab-delimited horizon data and creates spreadsheet of 'cells'")]
-    class CrunchOptions
-    {
-        [Value(1, Required = true, HelpText = "A file path for a tab-delimited horizon file")]
-        public string HorizonPath { get; set; }
-
-        [Value(2, Required = true, HelpText = "A file path for a comma-delimited well location file (X, Y)")]
-        public string WellPath { get; set; }
-    }
-
-    [Verb("gen", HelpText = "Generates random well locations")]
-    class GenOptions
-    {
-        [Value(1, Required = true, HelpText = "A destination file path for a comma-delimited well location file (X, Y)")]
-        public string WellPath { get; set; }
-
-        [Option('n', "count", HelpText = "Number of wells to generate. Default is 5.")]
-        public int Count { get; set; } = 5;
-    }
-
     class Program
     {
         static int Main(string[] args)
@@ -58,6 +38,19 @@ namespace geocells
             var wells = CsvReading.ReadCsvFromFile<Location>(opts.WellPath)
                 .ToArray();
             Console.WriteLine($"Read {wells.Length} well locations.");
+            Console.WriteLine("Calculating distances...");
+            foreach (var sample in horizonSamples)
+                sample.DistanceToNearestWell = DistanceToNearestWell(sample, wells);
+            Console.WriteLine("Writing output...");
+            CsvReading.WriteCsvToFile(opts.OutputPath, horizonSamples);
+            Console.WriteLine("Done.");
+        }
+
+        static double DistanceToNearestWell(ILocation sample, ILocation[] wells)
+        {
+            var squareDistances = wells.Select(well => well.DistanceSquared(sample));
+            var squareNearest = squareDistances.Min();
+            return Math.Sqrt(squareNearest);
         }
 
         private static Random _rnd = new Random();
@@ -75,7 +68,7 @@ namespace geocells
             for (int i = 0; i < opts.Count; i++)
             {
                 var x = _rnd.NextDouble() * dx + xMin;
-                var y = _rnd.NextDouble() * dy + xMin;
+                var y = _rnd.NextDouble() * dy + yMin;
                 locations[i] = new Location { X = x, Y = y };
             }
             CsvReading.WriteCsvToFile(opts.WellPath, locations);
