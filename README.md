@@ -39,12 +39,12 @@ The primary input is a horizon which is tab-delimited with a header like the fol
 To generate 5 well locations in the inline/crossline space of the horizon:
 
 ```
-dotnet start gen well_locations.csv -h horizon.txt -n 5
+dotnet run gen well_locations.csv -h horizon.txt -n 5
 ```
 
 To calculate distances to wells and very rough metrics of well location goodness:
 
 ```
-dotnet start crunch horizon.txt well_locations.csv output_horizon.csv
+dotnet run crunch horizon.txt well_locations.csv output_horizon.csv
 ```
 
