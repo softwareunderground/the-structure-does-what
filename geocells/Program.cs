@@ -72,7 +72,7 @@ namespace geocells
 
         private static void Gen(GenOptions opts)
         {
-            // Hard-coded values based on sample data...
+            // Default range is 0 to 1000
             var xMin = 0.0;
             var xMax = 1000.0;
             var yMin = 0.0;
