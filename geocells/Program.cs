@@ -34,10 +34,7 @@ namespace geocells
 
         private static void Crunch(CrunchOptions opts)
         {
-            var horizonSamples = CsvReading.ReadCsvFromFile<HorizonSample>(opts.HorizonPath, "\t")
-                .Where(s => s.Amplitude != NullValue && s.Porosity != NullValue && s.Z != NullValue)
-                .ToArray();
-            Console.WriteLine($"Read {horizonSamples.Length} horizon samples.");
+            HorizonSample[] horizonSamples = ReadHorizon(opts.HorizonPath);
             var wells = CsvReading.ReadCsvFromFile<Location>(opts.WellPath)
                 .ToArray();
             Console.WriteLine($"Read {wells.Length} well locations.");
@@ -52,6 +49,16 @@ namespace geocells
             Console.WriteLine("Writing output...");
             CsvReading.WriteCsvToFile(opts.OutputPath, horizonSamples);
             Console.WriteLine("Done.");
+            Console.WriteLine("You're welcome.");
+        }
+
+        private static HorizonSample[] ReadHorizon(string horizonPath)
+        {
+            var horizonSamples = CsvReading.ReadCsvFromFile<HorizonSample>(horizonPath, "\t")
+                .Where(s => s.Amplitude != NullValue && s.Porosity != NullValue && s.Z != NullValue)
+                .ToArray();
+            Console.WriteLine($"Read {horizonSamples.Length} horizon samples.");
+            return horizonSamples;
         }
 
         static double DistanceToNearestWell(ILocation sample, ILocation[] wells)
@@ -66,11 +73,20 @@ namespace geocells
         private static void Gen(GenOptions opts)
         {
             // Hard-coded values based on sample data...
-            var xMin = 100.0;
-            var xMax = 750.0;
+            var xMin = 0.0;
+            var xMax = 1000.0;
+            var yMin = 0.0;
+            var yMax = 1000.0;
+            if (opts.HorizonPath != null)
+            {
+                var horizonSamples = ReadHorizon(opts.HorizonPath);
+                xMin = horizonSamples.Min(s => s.X);
+                xMax = horizonSamples.Max(s => s.X);
+                yMin = horizonSamples.Min(s => s.Y);
+                yMax = horizonSamples.Max(s => s.Y);
+            }
+            Console.WriteLine($"Using range x={xMin}...{xMax}, y={yMin}...{yMax}.");
             var dx = xMax - xMin;
-            var yMin = 300.0;
-            var yMax = 1250.0;
             var dy = yMax - yMin;
             var locations = new Location[opts.Count];
             for (int i = 0; i < opts.Count; i++)

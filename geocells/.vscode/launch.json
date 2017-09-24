@@ -11,8 +11,8 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceRoot}/bin/Debug/netcoreapp1.1/geocells.dll",
-            "args": ["crunch", "data/Hzn_F8_Z_Por.txt", "data/rndwells2.txt", "data/output-F8.csv"],
-            //"args": ["gen", "data/rndwells2.txt"],
+            //"args": ["crunch", "data/Hzn_F8_Z_Por.txt", "data/rndwells2.txt", "data/output-F8.csv"],
+            "args": ["gen", "data/rndwells2.txt", "-h", "data/Hzn_F8_Z_Por.txt"],
             "cwd": "${workspaceRoot}",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
