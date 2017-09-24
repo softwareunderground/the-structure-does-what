@@ -38,9 +38,14 @@ namespace geocells
             var wells = CsvReading.ReadCsvFromFile<Location>(opts.WellPath)
                 .ToArray();
             Console.WriteLine($"Read {wells.Length} well locations.");
-            Console.WriteLine("Calculating distances...");
-            foreach (var sample in horizonSamples)
-                sample.DistanceToNearestWell = DistanceToNearestWell(sample, wells);
+            if (horizonSamples[0].DistanceToNearestWell == 0)
+            {
+                Console.WriteLine("Calculating distances...");
+                foreach (var sample in horizonSamples)
+                    sample.DistanceToNearestWell = DistanceToNearestWell(sample, wells);
+            }
+            else
+                Console.WriteLine("Skipping distance calculation because distance already in horizon file.");
             Console.WriteLine("Writing output...");
             CsvReading.WriteCsvToFile(opts.OutputPath, horizonSamples);
             Console.WriteLine("Done.");

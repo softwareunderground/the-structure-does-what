@@ -21,5 +21,9 @@ namespace geocells
             DistanceToNearestWell > 100;
 
         public int GoodBit => Good ? 1 : 0;
+
+        // Trying to find highest point with highest porosity, furthest from other wells
+        public double Score => 
+            Porosity / (DistanceToNearestWell * Z);
     }
 }
