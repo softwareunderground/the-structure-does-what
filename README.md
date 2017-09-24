@@ -1,6 +1,7 @@
-
 # The structure does _WHAT!?_
 
+Some code from a project built during the 
+[2017 Geophysics Hackathon](https://agilescientific.com/blog/2017/7/24/newsflash-the-geophysics-hackathon-is-back).
 
 ## Team
 
@@ -47,4 +48,10 @@ To calculate distances to wells and very rough metrics of well location goodness
 ```
 dotnet run -- crunch horizon.txt well_locations.csv output_horizon.csv
 ```
+
+## Credits
+
+The included sample data is courtesy of the [dGB Open Seismic Repository](http://www.opendtect.org/osr/). 
+We used horizon FS8 from 
+[Netherlands Offshore F3 Block](http://www.opendtect.org/osr/pmwiki.php/Main/NetherlandsOffshoreF3BlockComplete4GB).
 
