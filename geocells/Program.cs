@@ -30,9 +30,12 @@ namespace geocells
             }
         }
 
+        private const double NullValue = 1e30;
+
         private static void Crunch(CrunchOptions opts)
         {
             var horizonSamples = CsvReading.ReadCsvFromFile<HorizonSample>(opts.HorizonPath, "\t")
+                .Where(s => s.Amplitude != NullValue && s.Porosity != NullValue && s.Z != NullValue)
                 .ToArray();
             Console.WriteLine($"Read {horizonSamples.Length} horizon samples.");
             var wells = CsvReading.ReadCsvFromFile<Location>(opts.WellPath)
@@ -63,11 +66,11 @@ namespace geocells
         private static void Gen(GenOptions opts)
         {
             // Hard-coded values based on sample data...
-            var xMin = 1000.0;
-            var xMax = 1300.0;
+            var xMin = 100.0;
+            var xMax = 750.0;
             var dx = xMax - xMin;
-            var yMin = 2000.0;
-            var yMax = 2245.0;
+            var yMin = 300.0;
+            var yMax = 1250.0;
             var dy = yMax - yMin;
             var locations = new Location[opts.Count];
             for (int i = 0; i < opts.Count; i++)
