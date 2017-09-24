@@ -55,3 +55,4 @@ The included sample data is courtesy of the [dGB Open Seismic Repository](http:/
 We used horizon FS8 from 
 [Netherlands Offshore F3 Block](http://www.opendtect.org/osr/pmwiki.php/Main/NetherlandsOffshoreF3BlockComplete4GB).
 
+[<img src="https://licensebuttons.net/l/by-sa/3.0/80x15.png">](http://creativecommons.org/licenses/by-sa/3.0/)
